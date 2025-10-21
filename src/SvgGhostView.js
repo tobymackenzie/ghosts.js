@@ -30,7 +30,7 @@ var SVGGhostView = _createClass({
 				_ghost.el.classList.add('ghost');
 				_ghost.el.setAttributeNS(null, 'font-size', this.ghostSize + 'px')
 				_ghost.el.appendChild(document.createTextNode('👻'));
-				_parProto.createGhostEl.apply(this, arguments);
+				this.positionGhostEl(_ghost);
 			}
 			return _ghost;
 		},

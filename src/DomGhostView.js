@@ -50,6 +50,9 @@ var DOMGhostView = _createClass({
 			}, 1100);
 		},
 		createGhostEl: function(_ghost){
+			_ghost.el = document.createElement('div');
+			_ghost.el.classList.add('ghost', 'ghost-dom');
+			_ghost.el.innerHTML = '👻';
 			this.positionGhostEl(_ghost);
 		},
 		removeGhost: function(){
@@ -68,7 +71,10 @@ var DOMGhostView = _createClass({
 			}
 			return _ghost;
 		},
-		positionGhostEl: function(_ghost){},
+		positionGhostEl: function(_ghost){
+			_ghost.el.style.left = parseInt(_ghost.x) + 'px';
+			_ghost.el.style.top = parseInt(_ghost.y) + 'px';
+		},
 		step: function(){
 			_parProto.step.apply(this, arguments);
 			for(var _i = 0; _i < this.ghosts.length; ++_i){

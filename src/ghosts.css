@@ -4,6 +4,7 @@
 		position: fixed;
 		height: 100%;
 		left: 0;
+		overflow: hidden;
 		top: 0;
 		width: 100%;
 		z-index: 9999;
@@ -22,6 +23,10 @@
 		opacity: 1;
 		transform: scale(5);
 		z-index: 9999;
+	}
+	.ghost-dom{
+		font-size: 48px;
+		position: absolute;
 	}
 	.ghost-svg{
 		opacity: 0.8;
