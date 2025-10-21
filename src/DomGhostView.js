@@ -37,13 +37,17 @@ var DOMGhostView = _createClass({
 			return _ghost;
 		},
 		addGhostEvents: function(_ghost){
+			var _self = this;
 			_ghost.el.addEventListener('click', function(){
-				_ghost.el.dataset.state = 'boo';
-				setTimeout(function(){
-					alert('Boo');
-					delete _ghost.el.dataset.state;
-				}, 1100);
+				_self.onGhostClick(_ghost);
 			});
+		},
+		onGhostClick: function(_ghost){
+			_ghost.el.dataset.state = 'boo';
+			setTimeout(function(){
+				alert('Boo');
+				delete _ghost.el.dataset.state;
+			}, 1100);
 		},
 		createGhostEl: function(_ghost){
 			this.positionGhostEl(_ghost);

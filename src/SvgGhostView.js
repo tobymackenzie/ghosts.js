@@ -59,6 +59,15 @@ var SVGGhostView = _createClass({
 				_ghost.y += _ghost.ySpeed;
 			}
 		},
+		onGhostClick: function(_ghost){
+			var _parent = _ghost.el.ownerSVGElement;
+			_parent.removeChild(_ghost.el);
+			_parent.appendChild(_ghost.el);
+			//-# must be in timeout for animation to work properly
+			setTimeout(function(){
+				DOMGhostView.prototype.onGhostClick.call(this, _ghost);
+			}, 50);
+		},
 		onResize: function(){
 			_parProto.onResize.apply(this, arguments);
 			this.fixCanvDimensions();
