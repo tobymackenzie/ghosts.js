@@ -1,7 +1,5 @@
 import {ready as _ready} from './ready.js';
-// import {CanvasGhostView as GhostView} from './CanvasGhostView.js';
-import {DOMGhostView as GhostView} from './DomGhostView.js';
-// import {SVGGhostView as GhostView} from './SvgGhostView.js';
+import {GhostView} from './GhostView.js';
 
 if(
 	document.querySelector

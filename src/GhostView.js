@@ -10,12 +10,15 @@ var GhostView = _createClass({
 	},
 	props: {
 		//--config
+		className: 'ghostView ghost-dom',
+		elAttr: {},
 		container: undefined,
 		countFactor: 1,
 		frameRate: 12,
 		ghostSize: 48,
 		maxSpeed: 3,
 		name: 'GhostView',
+		nodeName: 'div',
 		offScreenPadding: 1,
 		randAmount: 1.8,
 
@@ -25,6 +28,18 @@ var GhostView = _createClass({
 		ghost: undefined,
 		activate: function(){
 			var _self = this;
+			if(!_self.el){
+				_self.el = document.createElement(_self.nodeName);
+			}
+			if(_self.className){
+				_self.el.className = _self.className;
+			}
+			for(var _key in _self.elAttr){
+				if(_self.elAttr.hasOwnProperty(_key)){
+					_self.el.setAttribute(_key, _self.elAttr[_key]);
+				}
+			}
+			this.container.appendChild(this.el);
 			_self.determineGhostCount();
 			window.addEventListener('resize', function(){
 				_self.onResize();
@@ -51,7 +66,22 @@ var GhostView = _createClass({
 				ySpeed: Math.round(Math.random()) ? 1 : -1,
 			};
 			this.ghosts.push(_ghost);
+			this.createGhostEl(_ghost);
+			this.el.appendChild(_ghost.el);
+			this.addGhostEvents(_ghost);
 			return _ghost;
+		},
+		addGhostEvents: function(_ghost){
+			var _self = this;
+			_ghost.el.addEventListener('click', function(){
+				_self.onGhostClick(_ghost);
+			});
+		},
+		createGhostEl: function(_ghost){
+			_ghost.el = document.createElement('div');
+			_ghost.el.classList.add('ghost', 'ghost-dom');
+			_ghost.el.innerHTML = '👻';
+			this.positionGhostEl(_ghost);
 		},
 		determineGhostCount: function(){
 			var _dim = this.getElDimensions();
@@ -90,16 +120,41 @@ var GhostView = _createClass({
 				_ghost.y += _ghost.ySpeed;
 			}
 		},
+		onGhostClick: function(_ghost){
+			_ghost.el.dataset.state = 'boo';
+			setTimeout(function(){
+				alert('Boo');
+				delete _ghost.el.dataset.state;
+			}, 1100);
+		},
 		onResize: function(){
 			this.determineGhostCount();
 		},
+		positionGhostEl: function(_ghost){
+			_ghost.el.style.left = parseInt(_ghost.x) + 'px';
+			_ghost.el.style.top = parseInt(_ghost.y) + 'px';
+		},
 		removeGhost: function(){
-			return this.ghosts.pop();
+			var _ghost = this.ghosts.pop();
+			if(_ghost.el){
+				var _self = this;
+				var _gone = function(){
+					_self.el.removeChild(_ghost.el);
+				};
+				if(_ghost.el.animate){
+					var anim = _ghost.el.animate({opacity: 0}, {duration: 1000, iterations: 1});
+					anim.addEventListener('finish', _gone);
+				}else{
+					_gone();
+				}
+			}
+			return _ghost;
 		},
 		step: function(){
 			for(var _i = 0; _i < this.ghosts.length; ++_i){
 				var _ghost = this.ghosts[_i];
 				this.stepGhost(_ghost);
+				this.positionGhostEl(_ghost);
 			}
 			return this;
 		},
