@@ -26,6 +26,7 @@
 	}
 	.ghost-dom{
 		font-size: 48px;
+		opacity: 0.9;
 		position: absolute;
 	}
 	.ghost-svg{
