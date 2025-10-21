@@ -1,0 +1,6 @@
+{
+	"name": "@tobymackenzie/ghosts.js",
+	"license": "0BSD",
+	"main": "ghosts.js",
+	"type": "module"
+}

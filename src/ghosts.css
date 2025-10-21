@@ -1,0 +1,29 @@
+@supports (pointer-events: none){
+	.ghostView{
+		pointer-events: none;
+		position: fixed;
+		height: 100%;
+		left: 0;
+		top: 0;
+		width: 100%;
+		z-index: 9999;
+	}
+	.ghostView .ghost{
+		cursor: pointer;
+		pointer-events: all;
+		transform-box: fill-box;
+		transform-origin: center;
+		transition: opacity 1s, transform 1s;
+	}
+	.ghostView .ghost:hover{
+		opacity: 0;
+	}
+	.ghostView .ghost[data-state='boo']{
+		opacity: 1;
+		transform: scale(5);
+		z-index: 9999;
+	}
+	.ghost-svg{
+		opacity: 0.8;
+	}
+}
