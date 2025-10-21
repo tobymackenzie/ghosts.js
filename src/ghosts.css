@@ -24,12 +24,13 @@
 		transform: scale(5);
 		z-index: 9999;
 	}
-	.ghost-dom{
+	.ghostView .ghost-dom{
 		font-size: 48px;
 		opacity: 0.9;
 		position: absolute;
+		transition: opacity 1s, transform 1s, left 0.01s, top 0.01s;
 	}
-	.ghost-svg{
+	.ghostView .ghost-svg{
 		opacity: 0.8;
 	}
 }
