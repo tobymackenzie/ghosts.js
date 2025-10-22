@@ -25,6 +25,7 @@ var GhostView = _createClass({
 
 		//--
 		_count: 1,
+		_elDimensions: undefined,
 		activate: function(){
 			var _self = this;
 			if(!_self.el){
@@ -77,7 +78,7 @@ var GhostView = _createClass({
 			return _ghost;
 		},
 		_determineGhostCount: function(){
-			var _dim = this._getElDimensions();
+			var _dim = this._getElDimensions(true);
 			this._count = Math.round((_dim.width + _dim.height) / 600 * this.countFactor);
 			if(this._count > this.ghosts.length){
 				for(var _i = 0, _end = this._count - this.ghosts.length; _i < _end; ++_i){
@@ -90,14 +91,16 @@ var GhostView = _createClass({
 			}
 			return this;
 		},
-		_getElDimensions: function(){
-			return {
-				width: this.el.offsetWidth,
-				height: this.el.offsetHeight,
-			};
+		_getElDimensions: function(force){
+			if(force || !this._elDimensions){
+				this._elDimensions = {
+					width: this.el.offsetWidth,
+					height: this.el.offsetHeight,
+				};
+			}
+			return this._elDimensions;
 		},
-		_moveGhostData: function(_ghost){
-			var _dim = this._getElDimensions();
+		_moveGhostData: function(_ghost, _dim){
 			if(_ghost.x > _dim.width + this.offScreenPadding){
 				_ghost.x = -1 * (this.offScreenPadding + this.ghostSize);
 			}else if(_ghost.x < -1 * (this.offScreenPadding + this.ghostSize)){
@@ -141,11 +144,12 @@ var GhostView = _createClass({
 			return _ghost;
 		},
 		_step: function(){
+			var _dim = this._getElDimensions();
 			for(var _i = 0; _i < this.ghosts.length; ++_i){
 				var _ghost = this.ghosts[_i];
 				_ghost.xSpeed = this._calcNewSpeed(_ghost.xSpeed);
 				_ghost.ySpeed = this._calcNewSpeed(_ghost.ySpeed);
-				this._moveGhostData(_ghost);
+				this._moveGhostData(_ghost, _dim);
 				this._positionGhostEl(_ghost);
 			}
 			return this;
