@@ -127,7 +127,9 @@ var GhostView = _createClass({
 			}
 			return this._elDimensions;
 		},
-		_moveGhostData: function(_ghost, _dim){
+		_moveGhost: function(_ghost, _dim){
+			_ghost.xSpeed = this._calcNewSpeed(_ghost.xSpeed);
+			_ghost.ySpeed = this._calcNewSpeed(_ghost.ySpeed);
 			if(_ghost.x > _dim.width + this.offScreenPadding){
 				_ghost.x = -1 * (this.offScreenPadding + this.ghostSize);
 			}else if(_ghost.x < -1 * (this.offScreenPadding + this.ghostSize)){
@@ -142,6 +144,7 @@ var GhostView = _createClass({
 			}else{
 				_ghost.y += _ghost.ySpeed;
 			}
+			this._positionGhostEl(_ghost);
 		},
 		_onGhostClick: function(_ghost){
 			_ghost.el.dataset.state = 'boo';
@@ -157,11 +160,7 @@ var GhostView = _createClass({
 		_step: function(){
 			var _dim = this._getElDimensions();
 			for(var _i = 0; _i < this.ghosts.length; ++_i){
-				var _ghost = this.ghosts[_i];
-				_ghost.xSpeed = this._calcNewSpeed(_ghost.xSpeed);
-				_ghost.ySpeed = this._calcNewSpeed(_ghost.ySpeed);
-				this._moveGhostData(_ghost, _dim);
-				this._positionGhostEl(_ghost);
+				this._moveGhost(this.ghosts[_i], _dim);
 			}
 			return this;
 		},
