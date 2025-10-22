@@ -10,7 +10,7 @@ var GhostView = _createClass({
 	},
 	props: {
 		//--config
-		className: 'ghostView ghost-dom',
+		className: 'ghostView',
 		elAttr: {},
 		container: undefined,
 		countFactor: 1,
@@ -79,7 +79,7 @@ var GhostView = _createClass({
 		},
 		createGhostEl: function(_ghost){
 			_ghost.el = document.createElement('div');
-			_ghost.el.classList.add('ghost', 'ghost-dom');
+			_ghost.el.classList.add('ghost');
 			_ghost.el.innerHTML = '👻';
 			this.positionGhostEl(_ghost);
 		},
