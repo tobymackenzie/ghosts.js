@@ -94,7 +94,16 @@ var GhostView = _createClass({
 			}
 			return _ghost;
 		},
-
+		_calcNewCoordinate: function(pos, speed, edge){
+			if(pos > edge + this.offScreenPadding){
+				pos = -1 * (this.offScreenPadding + this.ghostSize);
+			}else if(pos < -1 * (this.offScreenPadding + this.ghostSize)){
+				pos = edge + this.offScreenPadding;
+			}else{
+				pos += speed;
+			}
+			return pos;
+		},
 		_calcNewSpeed: function(_speed){
 			_speed += Math.round(Math.random() * this.randAmount + .13) - Math.floor(this.randAmount);
 			if(_speed < -1 * this.maxSpeed){
@@ -130,20 +139,8 @@ var GhostView = _createClass({
 		_moveGhost: function(_ghost, _dim){
 			_ghost.xSpeed = this._calcNewSpeed(_ghost.xSpeed);
 			_ghost.ySpeed = this._calcNewSpeed(_ghost.ySpeed);
-			if(_ghost.x > _dim.width + this.offScreenPadding){
-				_ghost.x = -1 * (this.offScreenPadding + this.ghostSize);
-			}else if(_ghost.x < -1 * (this.offScreenPadding + this.ghostSize)){
-				_ghost.x = _dim.width + this.offScreenPadding;
-			}else{
-				_ghost.x += _ghost.xSpeed;
-			}
-			if(_ghost.y > _dim.height + this.offScreenPadding){
-				_ghost.y = -1 * (this.offScreenPadding + this.ghostSize);
-			}else if(_ghost.y < -1 * (this.offScreenPadding + this.ghostSize)){
-				_ghost.y = _dim.height + this.offScreenPadding;
-			}else{
-				_ghost.y += _ghost.ySpeed;
-			}
+			_ghost.x = this._calcNewCoordinate(_ghost.x, _ghost.xSpeed, _dim.width);
+			_ghost.y = this._calcNewCoordinate(_ghost.y, _ghost.ySpeed, _dim.height);
 			this._positionGhostEl(_ghost);
 		},
 		_onGhostClick: function(_ghost){
