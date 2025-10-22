@@ -26,6 +26,7 @@ var GhostView = _createClass({
 		//--
 		_count: 1,
 		_elDimensions: undefined,
+
 		activate: function(){
 			var _self = this;
 			if(!_self.el){
@@ -77,6 +78,32 @@ var GhostView = _createClass({
 			});
 			return _ghost;
 		},
+		removeGhost: function(){
+			var _ghost = this.ghosts.pop();
+			if(_ghost.el){
+				var _self = this;
+				var _gone = function(){
+					_self.el.removeChild(_ghost.el);
+				};
+				if(_ghost.el.animate){
+					var anim = _ghost.el.animate({opacity: 0}, {duration: 1000, iterations: 1});
+					anim.addEventListener('finish', _gone);
+				}else{
+					_gone();
+				}
+			}
+			return _ghost;
+		},
+
+		_calcNewSpeed: function(_speed){
+			_speed += Math.round(Math.random() * this.randAmount + .13) - Math.floor(this.randAmount);
+			if(_speed < -1 * this.maxSpeed){
+				_speed = -1 * this.maxSpeed;
+			}else if(_speed > this.maxSpeed){
+				_speed = this.maxSpeed;
+			}
+			return _speed;
+		},
 		_determineGhostCount: function(){
 			var _dim = this._getElDimensions(true);
 			this._count = Math.round((_dim.width + _dim.height) / 600 * this.countFactor);
@@ -127,22 +154,6 @@ var GhostView = _createClass({
 			_ghost.el.style.left = parseInt(_ghost.x) + 'px';
 			_ghost.el.style.top = parseInt(_ghost.y) + 'px';
 		},
-		removeGhost: function(){
-			var _ghost = this.ghosts.pop();
-			if(_ghost.el){
-				var _self = this;
-				var _gone = function(){
-					_self.el.removeChild(_ghost.el);
-				};
-				if(_ghost.el.animate){
-					var anim = _ghost.el.animate({opacity: 0}, {duration: 1000, iterations: 1});
-					anim.addEventListener('finish', _gone);
-				}else{
-					_gone();
-				}
-			}
-			return _ghost;
-		},
 		_step: function(){
 			var _dim = this._getElDimensions();
 			for(var _i = 0; _i < this.ghosts.length; ++_i){
@@ -153,15 +164,6 @@ var GhostView = _createClass({
 				this._positionGhostEl(_ghost);
 			}
 			return this;
-		},
-		_calcNewSpeed: function(_speed){
-			_speed += Math.round(Math.random() * this.randAmount + .13) - Math.floor(this.randAmount);
-			if(_speed < -1 * this.maxSpeed){
-				_speed = -1 * this.maxSpeed;
-			}else if(_speed > this.maxSpeed){
-				_speed = this.maxSpeed;
-			}
-			return _speed;
 		},
 	},
 });
