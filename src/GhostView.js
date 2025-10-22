@@ -42,6 +42,12 @@ var GhostView = _createClass({
 			}
 			this.container.appendChild(this.el);
 			_self._determineGhostCount();
+			//--may get empty dimensions on first load for some reason, try again
+			if(!this._count){
+				setTimeout(function(){
+					_self._determineGhostCount();
+				}, 200);
+			}
 			window.addEventListener('resize', function(){
 				_self._determineGhostCount();
 			});
