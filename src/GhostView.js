@@ -10,10 +10,11 @@ var GhostView = _createClass({
 	},
 	props: {
 		//--config
+		attr: {},
 		className: 'ghostView',
-		elAttr: {},
 		container: undefined,
 		countFactor: 1,
+		el: undefined,
 		frameRate: 12,
 		ghostSize: 48,
 		maxSpeed: 3,
@@ -23,9 +24,7 @@ var GhostView = _createClass({
 		randAmount: 1.8,
 
 		//--
-		el: undefined,
-		ghostCount: 1,
-		ghost: undefined,
+		_count: 1,
 		activate: function(){
 			var _self = this;
 			if(!_self.el){
@@ -34,21 +33,21 @@ var GhostView = _createClass({
 			if(_self.className){
 				_self.el.className = _self.className;
 			}
-			for(var _key in _self.elAttr){
-				if(_self.elAttr.hasOwnProperty(_key)){
-					_self.el.setAttribute(_key, _self.elAttr[_key]);
+			for(var _key in _self.attr){
+				if(_self.attr.hasOwnProperty(_key)){
+					_self.el.setAttribute(_key, _self.attr[_key]);
 				}
 			}
 			this.container.appendChild(this.el);
-			_self.determineGhostCount();
+			_self._determineGhostCount();
 			window.addEventListener('resize', function(){
-				_self.onResize();
+				_self._determineGhostCount();
 			});
 			var _lastDraw = 0;
 			var _frameDuration = 1000 / this.frameRate;
 			var _go = function(_time){
 				if(_time - _lastDraw >= _frameDuration){
-					_self.step();
+					_self._step();
 					_lastDraw = _time;
 				}
 				window.requestAnimationFrame(_go);
@@ -56,8 +55,9 @@ var GhostView = _createClass({
 			_go();
 		},
 		addGhost: function(_dim){
+			var _self = this;
 			if(!_dim){
-				_dim = this.getElDimensions();
+				_dim = _self._getElDimensions();
 			}
 			var _ghost = {
 				x: Math.round(Math.random()) ? 0 : _dim.width,
@@ -65,46 +65,39 @@ var GhostView = _createClass({
 				y: Math.round(Math.random()) ? 0 : _dim.height,
 				ySpeed: Math.round(Math.random()) ? 1 : -1,
 			};
-			this.ghosts.push(_ghost);
-			this.createGhostEl(_ghost);
-			this.el.appendChild(_ghost.el);
-			this.addGhostEvents(_ghost);
-			return _ghost;
-		},
-		addGhostEvents: function(_ghost){
-			var _self = this;
-			_ghost.el.addEventListener('click', function(){
-				_self.onGhostClick(_ghost);
-			});
-		},
-		createGhostEl: function(_ghost){
+			_self.ghosts.push(_ghost);
 			_ghost.el = document.createElement('div');
 			_ghost.el.classList.add('ghost');
 			_ghost.el.innerHTML = '👻';
-			this.positionGhostEl(_ghost);
+			_self._positionGhostEl(_ghost);
+			_self.el.appendChild(_ghost.el);
+			_ghost.el.addEventListener('click', function(){
+				_self._onGhostClick(_ghost);
+			});
+			return _ghost;
 		},
-		determineGhostCount: function(){
-			var _dim = this.getElDimensions();
-			this.ghostCount = Math.round((_dim.width + _dim.height) / 600 * this.countFactor);
-			if(this.ghostCount > this.ghosts.length){
-				for(var _i = 0, _end = this.ghostCount - this.ghosts.length; _i < _end; ++_i){
+		_determineGhostCount: function(){
+			var _dim = this._getElDimensions();
+			this._count = Math.round((_dim.width + _dim.height) / 600 * this.countFactor);
+			if(this._count > this.ghosts.length){
+				for(var _i = 0, _end = this._count - this.ghosts.length; _i < _end; ++_i){
 					this.addGhost(_dim);
 				}
-			}else if(this.ghostCount < this.ghosts.length){
-				for(var _i = 0, _end = this.ghosts.length - this.ghostCount; _i < _end; ++_i){
+			}else if(this._count < this.ghosts.length){
+				for(var _i = 0, _end = this.ghosts.length - this._count; _i < _end; ++_i){
 					this.removeGhost();
 				}
 			}
 			return this;
 		},
-		getElDimensions: function(){
+		_getElDimensions: function(){
 			return {
 				width: this.el.offsetWidth,
 				height: this.el.offsetHeight,
 			};
 		},
 		_moveGhostData: function(_ghost){
-			var _dim = this.getElDimensions();
+			var _dim = this._getElDimensions();
 			if(_ghost.x > _dim.width + this.offScreenPadding){
 				_ghost.x = -1 * (this.offScreenPadding + this.ghostSize);
 			}else if(_ghost.x < -1 * (this.offScreenPadding + this.ghostSize)){
@@ -120,17 +113,14 @@ var GhostView = _createClass({
 				_ghost.y += _ghost.ySpeed;
 			}
 		},
-		onGhostClick: function(_ghost){
+		_onGhostClick: function(_ghost){
 			_ghost.el.dataset.state = 'boo';
 			setTimeout(function(){
 				alert('Boo');
 				delete _ghost.el.dataset.state;
 			}, 1100);
 		},
-		onResize: function(){
-			this.determineGhostCount();
-		},
-		positionGhostEl: function(_ghost){
+		_positionGhostEl: function(_ghost){
 			_ghost.el.style.left = parseInt(_ghost.x) + 'px';
 			_ghost.el.style.top = parseInt(_ghost.y) + 'px';
 		},
@@ -150,29 +140,24 @@ var GhostView = _createClass({
 			}
 			return _ghost;
 		},
-		step: function(){
+		_step: function(){
 			for(var _i = 0; _i < this.ghosts.length; ++_i){
 				var _ghost = this.ghosts[_i];
-				this.stepGhost(_ghost);
-				this.positionGhostEl(_ghost);
+				_ghost.xSpeed = this._calcNewSpeed(_ghost.xSpeed);
+				_ghost.ySpeed = this._calcNewSpeed(_ghost.ySpeed);
+				this._moveGhostData(_ghost);
+				this._positionGhostEl(_ghost);
 			}
 			return this;
 		},
-		stepGhost: function(_ghost){
-			_ghost.xSpeed += Math.round(Math.random() * this.randAmount + .13) - Math.floor(this.randAmount);
-			if(_ghost.xSpeed < -1 * this.maxSpeed){
-				_ghost.xSpeed = -1 * this.maxSpeed;
-			}else if(_ghost.xSpeed > this.maxSpeed){
-				_ghost.xSpeed = this.maxSpeed;
+		_calcNewSpeed: function(_speed){
+			_speed += Math.round(Math.random() * this.randAmount + .13) - Math.floor(this.randAmount);
+			if(_speed < -1 * this.maxSpeed){
+				_speed = -1 * this.maxSpeed;
+			}else if(_speed > this.maxSpeed){
+				_speed = this.maxSpeed;
 			}
-			_ghost.ySpeed += Math.round(Math.random() * this.randAmount + .13) - Math.floor(this.randAmount);
-			if(_ghost.ySpeed < -1 * this.maxSpeed){
-				_ghost.ySpeed = -1 * this.maxSpeed;
-			}else if(_ghost.ySpeed > this.maxSpeed){
-				_ghost.ySpeed = this.maxSpeed;
-			}
-			this._moveGhostData(_ghost);
-			return this;
+			return _speed;
 		},
 	},
 });
