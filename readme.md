@@ -1,7 +1,7 @@
 Ghosts.js
 =======
 
-Ghosts JS creates some ghosts that slowly float around over a web page.  Load `ghosts.js` file directly to use the default settings or instantiate one of `SvgGhostView`, `DomGhostView`, or `CanvasGhostView`.  Moved from [my site's code](https://github.com/tobymackenzie/tobymackenzie.com.site).  I only load it near Hallowe'en time with something like:
+Ghosts JS creates some ghosts that slowly float around over a web page.  Load `ghosts.js` file directly to use the default settings or instantiate `GhostView`.  Moved from [my site's code](https://github.com/tobymackenzie/tobymackenzie.com.site).  I only load it near Hallowe'en time with something like:
 
 ``` js
 var date = new Date();
