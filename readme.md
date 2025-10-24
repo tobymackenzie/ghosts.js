@@ -12,7 +12,7 @@ if(date.getMonth() === 9 && date.getDate() > 20){
 
 Also needs `ghosts.css` file, or styles applied to `.ghostView`.  The orange is `#ea7824` if you want to make your background that, but the project CSS won't mess with that.
 
-Should support browsers that support [`requestAnimationFrame`](https://caniuse.com/requestanimationframe) and [`pointer-events: none`](https://caniuse.com/pointer-events), but computer must also have font with ghost emoji (common).  Could be made to support old IE with some modifications that were originally in there but were removed for lighter weight.
+Should support browsers that support [`requestAnimationFrame`](https://caniuse.com/requestanimationframe) and [`pointer-events: none`](https://caniuse.com/pointer-events), but computer must also have font with ghost emoji (common).
 
 License
 ------
