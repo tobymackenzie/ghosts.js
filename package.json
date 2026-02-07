@@ -7,5 +7,6 @@
 		"license.md",
 		"readme.md",
 		"src/"
-	]
+	],
+	"version": "0.0.0"
 }
