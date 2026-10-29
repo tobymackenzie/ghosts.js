@@ -41,16 +41,6 @@ var GhostView = _createClass({
 				}
 			}
 			this.container.appendChild(this.el);
-			_self._determineGhostCount();
-			//--may get empty dimensions on first load for some reason, try again
-			if(!this._count){
-				setTimeout(function(){
-					_self._determineGhostCount();
-				}, 200);
-			}
-			window.addEventListener('resize', function(){
-				_self._determineGhostCount();
-			});
 			var _lastDraw = 0;
 			var _frameDuration = 1000 / this.frameRate;
 			var _go = function(_time){
@@ -60,7 +50,22 @@ var GhostView = _createClass({
 				}
 				window.requestAnimationFrame(_go);
 			};
-			_go();
+			var _setup = function(){
+				_self._determineGhostCount();
+				//--may get empty dimensions on first load for some reason, try again
+				var _dim = _self._getElDimensions();
+				if(_dim.width < 10 || _dim.height < 10){
+					setTimeout(function(){
+						_setup();
+					}, 200);
+				}else{
+					_go();
+				}
+			}
+			_setup();
+			window.addEventListener('resize', function(){
+				_self._determineGhostCount();
+			});
 		},
 		addGhost: function(_dim){
 			var _self = this;
